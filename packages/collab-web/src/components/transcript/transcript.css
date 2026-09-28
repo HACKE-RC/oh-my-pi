@@ -1,9 +1,5 @@
 /* Transcript — speaker-attributed turns in a reading column; agent tool activity
  * threads along a trail spine. tr-* namespace. */
-@import "./report.css";
-@import "./markdown.css";
-
-
 /* The frame hosts the scroller plus overlays pinned to the visible viewport (jump pill). */
 .tr-frame {
 	position: relative;

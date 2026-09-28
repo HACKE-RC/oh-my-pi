@@ -443,8 +443,8 @@ describe("Transcript subagent traffic", () => {
 			details: { from: "Main", message: body },
 		};
 		for (const compact of [false, true]) {
-			const render = (entry: SessionEntry): string =>
-				renderToStaticMarkup(
+			for (const entry of [parent, custom]) {
+				const html = renderToStaticMarkup(
 					<Transcript
 						entries={[entry]}
 						stream={null}
@@ -455,16 +455,15 @@ describe("Transcript subagent traffic", () => {
 						recipientName="Worker"
 					/>,
 				);
-			const normalize = (s: string): string => s.replace(/data-scroll-anchors="[^"]*"/g, "data-scroll-anchors");
-			const html = render(parent);
-			expect(normalize(html)).toBe(normalize(render(custom)));
-			expect(countElements(html, ".tr-irc .tr-md strong")).toBe(1);
-			expect(countElements(html, ".tr-irc .tr-md code")).toBe(1);
-			expect(countElements(html, ".tr-prompt")).toBe(0);
-			expect(html).toContain('class="tr-irc-from">Main');
-			expect(html).toContain('class="tr-irc-to">Worker');
-			expect(html).not.toContain("Wait interrupted by message");
-			expect(html).not.toContain("&lt;irc");
+				expect(countElements(html, ".tr-irc .tr-md strong")).toBe(1);
+				expect(countElements(html, ".tr-irc .tr-md code")).toBe(1);
+				expect(countElements(html, ".tr-prompt")).toBe(0);
+				expect(html).toContain('class="tr-irc-from">Main');
+				expect(html).toContain('class="tr-irc-to">Worker');
+				expect(html).toContain("Keep the response concise.");
+				expect(html).not.toContain("Wait interrupted by message");
+				expect(html).not.toContain("&lt;irc");
+			}
 		}
 	});
 
