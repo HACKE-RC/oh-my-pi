@@ -208,51 +208,43 @@ function AgentRow({ row, host }: { row: AgentRowModel; host?: ToolRenderHost }):
 				switch (unit.type) {
 					case "text":
 						return (
-							<div key={unit.key} className="tr-unit" data-scroll-anchors={JSON.stringify([unit.anchor])}>
+							<Anchored key={unit.key} keys={[unit.anchor]} className="tr-unit">
 								<Markdown text={unit.text} />
-							</div>
+							</Anchored>
 						);
 					case "thinking":
 						return (
-							<div key={unit.key} className="tr-unit" data-scroll-anchors={JSON.stringify([unit.anchor])}>
+							<Anchored key={unit.key} keys={[unit.anchor]} className="tr-unit">
 								<ThinkingBlock
 									text={unit.text}
 									redacted={unit.redacted}
 									live={unit.live}
 									durationMs={unit.durationMs}
 								/>
-							</div>
+							</Anchored>
 						);
 					case "activity":
 						return (
-							<div
-								key={unit.key}
-								className="tr-unit"
-								data-scroll-anchors={JSON.stringify(unit.items.map(item => `tool:${item.id}`))}
-							>
+							<Anchored key={unit.key} keys={unit.items.map(item => `tool:${item.id}`)} className="tr-unit">
 								<ActivityGroup items={unit.items} host={host} />
-							</div>
+							</Anchored>
 						);
 					case "subagents":
 						return (
-							<div
-								key={unit.key}
-								className="tr-unit"
-								data-scroll-anchors={JSON.stringify([`tool:${unit.item.id}`])}
-							>
+							<Anchored key={unit.key} keys={[`tool:${unit.item.id}`]} className="tr-unit">
 								<SubagentCard item={unit.item} host={host} />
-							</div>
+							</Anchored>
 						);
 					case "stop":
 						return (
-							<div key={unit.key} className="tr-stop" data-scroll-anchors={JSON.stringify([unit.anchor])}>
+							<Anchored key={unit.key} keys={[unit.anchor]} className="tr-stop">
 								<span className={`tr-chip ${unit.stop === "error" ? "tr-chip--err" : "tr-chip--warn"}`}>
 									{unit.stop}
 								</span>
 								{unit.message !== undefined && unit.message.length > 0 && (
 									<span className="tr-stop-msg">{unit.message}</span>
 								)}
-							</div>
+							</Anchored>
 						);
 				}
 			})}
@@ -539,7 +531,7 @@ export function Transcript(props: TranscriptProps): ReactNode {
 							return <AgentRow key={row.key} row={row} host={host} />;
 						case "human":
 							return (
-								<div key={row.key} data-scroll-anchors={JSON.stringify([`entry:${row.key}`])}>
+								<Anchored key={row.key} keys={[`entry:${row.key}`]}>
 									<HumanRow
 										entry={row.entry}
 										voice={row.voice}
@@ -547,19 +539,19 @@ export function Transcript(props: TranscriptProps): ReactNode {
 										continued={row.continued}
 										hostName={hostName}
 									/>
-								</div>
+								</Anchored>
 							);
 						case "notice":
 							return (
-								<div key={row.key} data-scroll-anchors={JSON.stringify([`entry:${row.key}`])}>
+								<Anchored key={row.key} keys={[`entry:${row.key}`]}>
 									<NoticeRow entry={row.entry} host={host} />
-								</div>
+								</Anchored>
 							);
 						case "irc":
 							return (
-								<div key={row.key} data-scroll-anchors={JSON.stringify([`entry:${row.key}`])}>
+								<Anchored key={row.key} keys={[`entry:${row.key}`]}>
 									<IrcNotice traffic={row.traffic} recipient={recipientName} />
-								</div>
+								</Anchored>
 							);
 					}
 				})}
@@ -575,6 +567,22 @@ export function Transcript(props: TranscriptProps): ReactNode {
 					{unseen > 0 ? `${unseen} new ${unseen === 1 ? "message" : "messages"}` : "Jump to latest"}
 				</button>
 			)}
+		</div>
+	);
+}
+
+function Anchored({
+	keys,
+	className,
+	children,
+}: {
+	keys: string[];
+	className?: string;
+	children: ReactNode;
+}): ReactNode {
+	return (
+		<div className={className} data-scroll-anchors={JSON.stringify(keys)}>
+			{children}
 		</div>
 	);
 }

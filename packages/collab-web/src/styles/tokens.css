@@ -1,8 +1,8 @@
 /* Design tokens — "control room at night": aubergine surfaces from the omp brand
  * (#0f0a14), phosphor-white text, brand pink as the human voice (caret, prompts,
  * primary action), brand cyan for focus. Dark is the default;
- * `[data-theme="light"]` and the prefers-color-scheme light fallback flip to
- * paper surfaces. The ONLY file allowed to contain raw color values. */
+ * `[data-theme="light"]` flips to paper surfaces (set by inline script in
+ * index.html before first paint). The ONLY file allowed to contain raw color values. */
 :root {
 	color-scheme: dark;
 
@@ -67,7 +67,9 @@
 	--backdrop: oklch(0.1 0.014 307 / 62%);
 }
 
-/* Light theme — explicit override (toggle writes data-theme="light"). */
+/* Light theme — applied by JS (theme.ts always sets data-theme on load).
+ * System-preference fallback for the pre-JS flash is handled by the inline
+ * script in index.html; no @media duplication needed here. */
 [data-theme="light"] {
 	color-scheme: light;
 
@@ -103,44 +105,4 @@
 	--prompt-shadow: 0 1px 2px oklch(0.3 0.04 315 / 6%);
 	--rail-mobile-shadow: -4px 0 16px oklch(0.3 0.04 307 / 14%);
 	--backdrop: oklch(0.55 0.02 307 / 28%);
-}
-
-/* Light theme — system fallback when no explicit preference is stored. */
-@media (prefers-color-scheme: light) {
-	:root:not([data-theme]) {
-		color-scheme: light;
-
-		--bg: oklch(0.985 0.003 307);
-		--bg-raised: oklch(1 0 0);
-		--bg-inset: oklch(0.962 0.006 307);
-		--bg-overlay: oklch(1 0 0);
-		--bg-hover: oklch(0.3 0.03 307 / 4.5%);
-
-		--fg: oklch(0.24 0.028 307);
-		--fg-muted: oklch(0.45 0.028 307);
-		--fg-faint: oklch(0.58 0.022 307);
-		--fg-ghost: oklch(0.72 0.016 307);
-
-		--accent: oklch(0.6 0.23 341);
-		--accent-fg: oklch(0.99 0.01 341);
-		--accent-muted: oklch(0.6 0.23 341 / 14%);
-		--accent-soft: oklch(0.6 0.23 341 / 7%);
-
-		--ok: oklch(0.56 0.14 150);
-		--warn: oklch(0.62 0.14 70);
-		--err: oklch(0.55 0.19 25);
-
-		--border-soft: oklch(0.3 0.03 307 / 6%);
-		--border: oklch(0.3 0.03 307 / 11%);
-		--border-strong: oklch(0.3 0.03 307 / 18%);
-		--ring: oklch(0.58 0.13 230 / 70%);
-
-		--shadow-dock: 0 8px 24px oklch(0.3 0.04 307 / 9%), 0 1px 2px oklch(0.3 0.04 307 / 8%);
-		--shadow-overlay: 0 12px 32px oklch(0.3 0.04 307 / 14%), 0 2px 8px oklch(0.3 0.04 307 / 10%);
-		--prompt-bg: oklch(0.965 0.016 315);
-		--prompt-border: oklch(0.86 0.03 315 / 60%);
-		--prompt-shadow: 0 1px 2px oklch(0.3 0.04 315 / 6%);
-		--rail-mobile-shadow: -4px 0 16px oklch(0.3 0.04 307 / 14%);
-		--backdrop: oklch(0.55 0.02 307 / 28%);
-	}
 }

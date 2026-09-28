@@ -23,9 +23,6 @@ body,
 
 body {
 	overscroll-behavior-y: none;
-}
-
-body {
 	font: 400 14px / 1.55 var(--font-ui);
 	background: var(--bg);
 	color: var(--fg);

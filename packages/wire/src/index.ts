@@ -87,7 +87,7 @@ export interface AssistantMessage {
 	errorMessage?: string;
 	timestamp: number;
 	/** Locally observed elapsed thinking ms per content index, available on partials after a block closes. Not provider-internal reasoning time; absent when unmeasured (including older sessions). */
-	thinkingMs?: Record<string, number>;
+	thinkingMs?: Record<number, number>;
 }
 
 export interface ToolResultMessage {

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "bun:test";
 import type { AssistantMessage, SessionEntry } from "@oh-my-pi/pi-wire";
 import { renderToStaticMarkup } from "react-dom/server";
+import { countElements } from "./test-utils";
 import "./transcript-dom-shim";
 import { followTranscriptTail, Transcript, updateTranscriptTailLock } from "../src/components/transcript/Transcript";
 import { GuestClient } from "../src/lib/client";
@@ -69,18 +70,6 @@ function renderTranscript(props: {
 			working={props.working}
 		/>,
 	);
-}
-
-function countElements(html: string, selector: string): number {
-	let count = 0;
-	new HTMLRewriter()
-		.on(selector, {
-			element() {
-				count++;
-			},
-		})
-		.transform(html);
-	return count;
 }
 
 describe("Transcript live tool rendering", () => {

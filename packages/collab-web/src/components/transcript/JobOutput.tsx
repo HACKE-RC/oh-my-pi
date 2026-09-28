@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { isRecord } from "../../tool-render/util";
 import type { AsyncJobResult } from "./agent-notices";
 import { Markdown } from "./Markdown";
+import "./report.css";
 
 /** Keep field order and values intact; only turn identifier-style keys into readable labels. */
 function fieldLabel(key: string): string {
