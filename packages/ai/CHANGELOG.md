@@ -4,7 +4,7 @@
 
 ### Added
 
-- Assistant messages expose optional per-block `thinkingMs` measurements on partial and persisted messages, without estimating unobserved reasoning time.
+- Assistant messages expose optional per-block `thinkingMs` measurements on partial and persisted messages, without estimating unobserved reasoning time ([#13597](https://github.com/can1357/oh-my-pi/pull/13597) by [@HACKE-RC](https://github.com/HACKE-RC)).
 
 ## [18.3.4] - 2026-09-27
 

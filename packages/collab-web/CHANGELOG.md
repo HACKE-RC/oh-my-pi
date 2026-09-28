@@ -4,18 +4,18 @@
 
 ### Changed
 
-- Redesigned the collab client with named speakers, a centered transcript, a prompt dock, and a tree-style agents panel.
-- Grouped tool calls into collapsible work blocks; tool details and injected notices expand on demand.
-- Added streaming reasoning with measured time shown below each completed segment; older sessions remain readable without timing data.
-- Added subagent cards with live status and transcript drawers, plus readable reports with a JSON toggle for structured results.
-- Added a "Jump to latest" button with an unread message count; the agents panel no longer opens over the chat on phones.
+- Redesigned the collab client with named speakers, a centered transcript, a prompt dock, and a tree-style agents panel ([#13597](https://github.com/can1357/oh-my-pi/pull/13597) by [@HACKE-RC](https://github.com/HACKE-RC)).
+- Grouped tool calls into collapsible work blocks; tool details and injected notices expand on demand ([#13597](https://github.com/can1357/oh-my-pi/pull/13597) by [@HACKE-RC](https://github.com/HACKE-RC)).
+- Added streaming reasoning with measured time shown below each completed segment; older sessions remain readable without timing data ([#13597](https://github.com/can1357/oh-my-pi/pull/13597) by [@HACKE-RC](https://github.com/HACKE-RC)).
+- Added subagent cards with live status and transcript drawers, plus readable reports with a JSON toggle for structured results ([#13597](https://github.com/can1357/oh-my-pi/pull/13597) by [@HACKE-RC](https://github.com/HACKE-RC)).
+- Added a "Jump to latest" button with an unread message count; the agents panel no longer opens over the chat on phones ([#13597](https://github.com/can1357/oh-my-pi/pull/13597) by [@HACKE-RC](https://github.com/HACKE-RC)).
 
 ### Fixed
 
-- Explained why joining over plain HTTP fails outside localhost and how to use a secure connection.
-- Kept reasoning and opened tool output stable as streamed messages are saved, with one status line for the current tool intent.
-- Displayed parent steering and inter-agent messages consistently in the main transcript and agent drawer, without raw IRC wrappers.
-- Kept the visible message in place when scrolling up loads earlier history.
+- Explained why joining over plain HTTP fails outside localhost and how to use a secure connection ([#13597](https://github.com/can1357/oh-my-pi/pull/13597) by [@HACKE-RC](https://github.com/HACKE-RC)).
+- Kept reasoning and opened tool output stable as streamed messages are saved, with one status line for the current tool intent ([#13597](https://github.com/can1357/oh-my-pi/pull/13597) by [@HACKE-RC](https://github.com/HACKE-RC)).
+- Displayed parent steering and inter-agent messages consistently in the main transcript and agent drawer, without raw IRC wrappers ([#13597](https://github.com/can1357/oh-my-pi/pull/13597) by [@HACKE-RC](https://github.com/HACKE-RC)).
+- Kept the visible message in place when scrolling up loads earlier history ([#13597](https://github.com/can1357/oh-my-pi/pull/13597) by [@HACKE-RC](https://github.com/HACKE-RC)).
 
 ## [18.3.1] - 2026-09-25
 
