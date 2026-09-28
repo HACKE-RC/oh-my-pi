@@ -57,7 +57,6 @@
 	--column: 760px;
 
 	/* elevation helpers (kept here so no raw colors leak outside this file) */
-	--shadow-dock: 0 10px 30px oklch(0 0 0 / 38%), 0 1px 3px oklch(0 0 0 / 30%);
 	/* human prompt surface — warm violet/aubergine tint distinct from neutral cards */
 	--prompt-bg: oklch(0.195 0.032 315);
 	--prompt-border: oklch(0.36 0.06 315 / 40%);
@@ -98,7 +97,6 @@
 	--border-strong: oklch(0.3 0.03 307 / 18%);
 	--ring: oklch(0.58 0.13 230 / 70%);
 
-	--shadow-dock: 0 8px 24px oklch(0.3 0.04 307 / 9%), 0 1px 2px oklch(0.3 0.04 307 / 8%);
 	--shadow-overlay: 0 12px 32px oklch(0.3 0.04 307 / 14%), 0 2px 8px oklch(0.3 0.04 307 / 10%);
 	--prompt-bg: oklch(0.965 0.016 315);
 	--prompt-border: oklch(0.86 0.03 315 / 60%);

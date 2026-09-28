@@ -115,14 +115,6 @@
 	filter: brightness(1.06);
 }
 
-/* Empty draft: a quiet outline instead of a washed-out pink slab. */
-.sh-btn-send:disabled {
-	opacity: 1;
-	color: var(--fg-ghost);
-	background: transparent;
-	border-color: var(--border);
-}
-
 .sh-btn-stop {
 	color: var(--err);
 	background: color-mix(in oklch, var(--err) 8%, transparent);
@@ -343,236 +335,6 @@
 .sh-presence-count {
 	display: none;
 	font-variant-numeric: tabular-nums;
-}
-
-/* ---- composer dock ---- */
-.sh-composer {
-	flex: none;
-	padding: 0 max(20px, calc((100% - var(--column)) / 2)) 16px;
-	padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
-	background: linear-gradient(to bottom, transparent, var(--bg) 14px);
-}
-
-.sh-dock {
-	display: flex;
-	flex-direction: column;
-	border: 1px solid var(--border-strong);
-	border-radius: var(--radius-xl);
-	background: var(--bg-raised);
-	box-shadow: var(--shadow-dock);
-	transition: border-color 150ms ease-out;
-}
-
-.sh-dock:focus-within {
-	border-color: var(--ring);
-}
-
-.sh-dock-idle {
-	box-shadow: none;
-	border-color: var(--border);
-	background: var(--bg);
-}
-
-.sh-composer-input {
-	display: block;
-	width: 100%;
-	min-width: 0;
-	padding: 12px 16px 4px;
-	font-size: 14px;
-	line-height: 22px;
-	color: var(--fg);
-	background: transparent;
-	border: 0;
-	border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-	resize: none;
-}
-
-.sh-composer-input::placeholder {
-	color: var(--fg-faint);
-}
-
-.sh-composer-input:disabled {
-	cursor: default;
-}
-
-.sh-composer-input:focus-visible {
-	outline: none;
-}
-
-.sh-dock-bar {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: 12px;
-	min-height: 44px;
-	padding: 6px 8px 8px 16px;
-}
-
-.sh-dock-meta {
-	display: flex;
-	align-items: center;
-	gap: 0;
-	min-width: 0;
-	overflow: hidden;
-	font: 400 11.5px / 1 var(--font-mono);
-	color: var(--fg-faint);
-	white-space: nowrap;
-}
-
-.sh-dock-item {
-	display: inline-flex;
-	align-items: center;
-	flex: none;
-}
-
-.sh-dock-item + .sh-dock-item::before {
-	content: "";
-	width: 3px;
-	height: 3px;
-	margin: 0 10px;
-	border-radius: 50%;
-	background: var(--fg-ghost);
-}
-
-.sh-dock-model {
-	flex: 0 1 auto;
-	min-width: 0;
-	overflow: hidden;
-	color: var(--fg-muted);
-	text-overflow: ellipsis;
-}
-
-.sh-gauge {
-	gap: 7px;
-}
-
-.sh-gauge-track {
-	width: 56px;
-	height: 4px;
-	background: var(--border-strong);
-	border-radius: 2px;
-	overflow: hidden;
-}
-
-.sh-gauge-fill {
-	display: block;
-	height: 100%;
-	background: var(--fg-muted);
-	border-radius: inherit;
-	transition: width 150ms ease-out;
-}
-
-.sh-gauge-pct {
-	font-variant-numeric: tabular-nums;
-}
-
-.sh-gauge-warn {
-	color: var(--warn);
-}
-
-.sh-gauge-warn .sh-gauge-fill {
-	background: var(--warn);
-}
-
-.sh-queued {
-	color: var(--accent);
-}
-
-.sh-composer-actions {
-	display: flex;
-	align-items: center;
-	gap: 6px;
-	flex: none;
-}
-
-/* ---- ask (host UI request) ---- */
-.sh-dock-ask {
-	border-color: color-mix(in oklch, var(--accent) 45%, var(--border-strong));
-}
-
-.sh-ask-head {
-	display: grid;
-	gap: 2px;
-	padding: 12px 16px 4px;
-}
-
-.sh-ask-kicker {
-	font: 500 10.5px / 1.4 var(--font-mono);
-	letter-spacing: 0.06em;
-	text-transform: uppercase;
-	color: var(--accent);
-}
-
-.sh-ask-title {
-	font-size: 14px;
-	font-weight: 600;
-	color: var(--fg);
-	white-space: pre-wrap;
-}
-
-.sh-ask-options {
-	display: grid;
-	gap: 4px;
-	padding: 6px 8px 0;
-	max-height: 40vh;
-	overflow-y: auto;
-}
-
-.sh-ask-option {
-	display: flex;
-	align-items: flex-start;
-	gap: 10px;
-	width: 100%;
-	padding: 8px 10px;
-	color: var(--fg);
-	text-align: left;
-	background: none;
-	border: 1px solid transparent;
-	border-radius: var(--radius-lg);
-	transition:
-		background 150ms ease-out,
-		border-color 150ms ease-out;
-}
-
-.sh-ask-option:hover {
-	background: var(--bg-hover);
-	border-color: var(--border);
-}
-
-.sh-ask-option-checked {
-	border-color: var(--accent-muted);
-	background: var(--accent-soft);
-}
-
-.sh-ask-option-marker {
-	width: 16px;
-	font: 400 13px / 20px var(--font-mono);
-	color: var(--accent);
-}
-
-.sh-ask-option-copy {
-	display: grid;
-	gap: 2px;
-	min-width: 0;
-}
-
-.sh-ask-option-label {
-	font-size: 13.5px;
-	font-weight: 500;
-	line-height: 20px;
-}
-
-.sh-ask-option-description {
-	font-size: 12.5px;
-	line-height: 1.4;
-	color: var(--fg-muted);
-}
-
-.sh-ask-editor {
-	display: flex;
-	align-items: flex-end;
-	gap: 8px;
-	padding-right: 8px;
 }
 
 /* ---- banners ---- */
@@ -937,10 +699,7 @@
 	.sh-cwd,
 	.sh-live-label,
 	.sh-sep,
-	.sh-dock-model,
-	.sh-gauge-track,
-	.sh-btn-label,
-	.sh-queued-label {
+	.sh-btn-label {
 		display: none;
 	}
 	.sh-live {
@@ -949,24 +708,9 @@
 	.sh-presence-count {
 		display: inline;
 	}
-	.sh-dock-model + .sh-dock-item::before {
-		display: none;
-	}
-	.sh-composer {
-		padding-inline: 10px;
-		padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
-	}
-	.sh-composer-actions .sh-btn {
-		padding: 0 10px;
-	}
-	.sh-ask-title,
-	.sh-ask-option-label {
-		font-size: 16px;
-	}
 }
 
 @media (any-pointer: coarse) {
-	.sh-composer-input,
 	.sh-input,
 	.sh-input-mono {
 		font-size: 16px;

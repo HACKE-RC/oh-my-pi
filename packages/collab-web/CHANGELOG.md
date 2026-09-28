@@ -5,6 +5,9 @@
 ### Changed
 
 - Redesigned the collab client with named speakers, a centered transcript, a prompt dock, and a tree-style agents panel ([#13597](https://github.com/can1357/oh-my-pi/pull/13597) by [@HACKE-RC](https://github.com/HACKE-RC)).
+- Restyled the prompt composer with a compact, auto-expanding input, a divided model/effort footer, a context ring, and a labeled Send button on mobile ([#13597](https://github.com/can1357/oh-my-pi/pull/13597) by [@HACKE-RC](https://github.com/HACKE-RC)).
+- Right-aligned host and guest messages and their bylines to distinguish them from agent replies in the main transcript and agent drawer ([#13597](https://github.com/can1357/oh-my-pi/pull/13597) by [@HACKE-RC](https://github.com/HACKE-RC)).
+- Reduced image attachment previews while preserving their aspect ratio and original resolution ([#13597](https://github.com/can1357/oh-my-pi/pull/13597) by [@HACKE-RC](https://github.com/HACKE-RC)).
 - Grouped tool calls into collapsible work blocks; tool details and injected notices expand on demand ([#13597](https://github.com/can1357/oh-my-pi/pull/13597) by [@HACKE-RC](https://github.com/HACKE-RC)).
 - Added streaming reasoning with measured time shown below each completed segment; older sessions remain readable without timing data ([#13597](https://github.com/can1357/oh-my-pi/pull/13597) by [@HACKE-RC](https://github.com/HACKE-RC)).
 - Added subagent cards with live status and transcript drawers, plus readable reports with a JSON toggle for structured results ([#13597](https://github.com/can1357/oh-my-pi/pull/13597) by [@HACKE-RC](https://github.com/HACKE-RC)).

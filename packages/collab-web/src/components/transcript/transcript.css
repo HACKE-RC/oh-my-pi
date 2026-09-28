@@ -152,9 +152,13 @@
 
 /* ---- human prompts ---- */
 
+.tr-row--user > .tr-speaker {
+	justify-content: flex-end;
+}
+
 .tr-prompt {
-	align-self: flex-start;
-	max-width: 100%;
+	align-self: flex-end;
+	max-width: 90%;
 	padding: 10px 14px;
 	border: 1px solid var(--prompt-border);
 	border-radius: var(--radius-lg);
@@ -221,8 +225,12 @@
 }
 
 .tr-msg-img {
-	max-height: 240px;
-	max-width: 100%;
+	display: block;
+	align-self: flex-start;
+	width: auto;
+	height: auto;
+	max-height: 180px;
+	max-width: min(100%, 480px);
 	border: 1px solid var(--border);
 	border-radius: var(--radius);
 }

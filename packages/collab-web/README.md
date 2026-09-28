@@ -2,6 +2,10 @@
 
 Web client for [omp collab sessions](../../docs/collab.md). Paste a `/collab` link into the browser and you get the same live session guests see in the TUI: streaming transcript, tool-call cards, subagent panel with live transcripts, and a composer that prompts (or interrupts) the host agent.
 
+Host and guest messages sit on the right with their speaker labels. Agent replies and inter-agent messages stay on the left, in both the main transcript and agent drawer.
+
+The prompt composer separates the input from a footer showing the host's model, reasoning effort, and context usage. These are read-only session details, not guest-side settings. Enter sends a prompt; Shift+Enter adds a line. Stop interrupts the current turn.
+
 Reasoning streams as visible Markdown, separate from collapsed work blocks of up to three tool calls. When the host has measured a reasoning segment, its elapsed time appears below the text as the segment finishes. Timing is retained for replay; older sessions without measurements show the text without a duration.
 
 Work blocks stay collapsed during execution unless you open them. Opened tool output updates in place and retains its state as results are saved. A single status line shows the latest streamed or executing tool intent (`i`), falling back to `Thinking…` until an intent is available; status text never replaces reasoning prose.
