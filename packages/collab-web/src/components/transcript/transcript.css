@@ -743,7 +743,6 @@ button.tr-subagent:hover {
 	color: var(--err);
 }
 
-
 /* ---- inter-agent messages ---- */
 
 .tr-irc {
@@ -847,7 +846,6 @@ button.tr-subagent:hover {
 	color: var(--fg-muted);
 	border-color: var(--border-strong);
 }
-
 
 /* ---- compact variant (agent drawer) ---- */
 

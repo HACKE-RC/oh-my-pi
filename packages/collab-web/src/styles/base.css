@@ -27,7 +27,9 @@ body {
 	background: var(--bg);
 	color: var(--fg);
 	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 	text-rendering: optimizeLegibility;
+	font-feature-settings: "cv11", "ss01";
 	overflow: hidden;
 }
 
@@ -59,6 +61,7 @@ kbd {
 :focus-visible {
 	outline: 2px solid var(--ring);
 	outline-offset: 2px;
+	border-radius: 4px;
 }
 
 input,
@@ -115,5 +118,15 @@ textarea {
 	}
 	100% {
 		background-position: 200% 0;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 1ms !important;
+		animation-delay: 0ms !important;
+		transition-duration: 1ms !important;
 	}
 }

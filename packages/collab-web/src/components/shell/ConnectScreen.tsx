@@ -20,7 +20,7 @@ export function ConnectScreen({ defaultName, error, onConnect }: ConnectScreenPr
 		e.preventDefault();
 		const trimmed = link.trim();
 		if (!trimmed) {
-			setLocalError("paste a join link first");
+			setLocalError("Paste a join link first.");
 			return;
 		}
 		setLocalError(null);

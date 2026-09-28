@@ -265,10 +265,10 @@ export function Composer({ client, snapshot }: ComposerProps): ReactNode {
 					onCompositionEnd={onCompositionEnd}
 					placeholder={
 						readOnly
-							? "read-only link — you're watching this session"
+							? "Read-only link — you're watching this session"
 							: live
-								? "prompt the host agent…"
-								: "waiting for session…"
+								? "Prompt the host agent…"
+								: "Waiting for the session…"
 					}
 					disabled={!canPrompt}
 					rows={1}

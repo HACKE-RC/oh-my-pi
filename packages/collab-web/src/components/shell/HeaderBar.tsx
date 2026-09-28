@@ -6,6 +6,14 @@ import { shortenPath } from "../../lib/format";
 import { BrandMark } from "./BrandMark";
 import { ThemeToggle } from "./ThemeToggle";
 
+const PHASE_LABEL: Record<ConnectionPhase, string> = {
+	connecting: "Connecting",
+	waiting: "Joining",
+	live: "Live",
+	reconnecting: "Reconnecting",
+	ended: "Ended",
+};
+
 export interface HeaderBarProps {
 	snapshot: GuestSnapshot;
 	subCount: number;
@@ -13,14 +21,6 @@ export interface HeaderBarProps {
 	onToggleRail(): void;
 	onLeave(): void;
 }
-
-const PHASE_LABEL: Record<ConnectionPhase, string> = {
-	connecting: "connecting",
-	waiting: "joining",
-	live: "live",
-	reconnecting: "reconnecting",
-	ended: "ended",
-};
 
 /** Names listed before collapsing the rest into "+N". */
 const MAX_NAMES = 3;
