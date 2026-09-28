@@ -123,6 +123,38 @@ function matchesAssistantMessage(partial: AssistantMessage, complete: AssistantM
 	});
 }
 
+/** Match persisted assistant identity without inspecting text or thinking content. */
+function matchesAssistantIdentity(left: AssistantMessage, right: AssistantMessage): boolean {
+	if (
+		left.timestamp !== right.timestamp ||
+		left.model !== right.model ||
+		left.stopReason !== right.stopReason ||
+		left.errorMessage !== right.errorMessage
+	) {
+		return false;
+	}
+	let leftIndex = 0;
+	let rightIndex = 0;
+	while (true) {
+		while (leftIndex < left.content.length && left.content[leftIndex].type !== "toolCall") leftIndex++;
+		while (rightIndex < right.content.length && right.content[rightIndex].type !== "toolCall") rightIndex++;
+		if (leftIndex === left.content.length || rightIndex === right.content.length) {
+			return leftIndex === left.content.length && rightIndex === right.content.length;
+		}
+		const leftBlock = left.content[leftIndex];
+		const rightBlock = right.content[rightIndex];
+		if (leftBlock?.type !== "toolCall" || rightBlock?.type !== "toolCall" || leftBlock.id !== rightBlock.id) {
+			return false;
+		}
+		leftIndex++;
+		rightIndex++;
+	}
+}
+
+function matchesPublishedAssistant(left: AssistantMessage, right: AssistantMessage): boolean {
+	return matchesAssistantMessage(left, right) || matchesAssistantIdentity(left, right);
+}
+
 export class GuestClient {
 	readonly #socket: CollabSocket;
 	readonly #name: string;
@@ -495,12 +527,18 @@ export class GuestClient {
 			const messages = this.#publishedAssistants.get(message.timestamp);
 			if (messages) messages.push(message);
 			else this.#publishedAssistants.set(message.timestamp, [message]);
-			if (this.#stream !== null && matchesAssistantMessage(this.#stream, message, !this.#streamDone)) {
+			if (
+				this.#stream !== null &&
+				(matchesAssistantMessage(this.#stream, message, !this.#streamDone) ||
+					matchesAssistantIdentity(this.#stream, message))
+			) {
 				this.#stream = null;
 				this.#streamDone = false;
 			}
-			if (this.#completedStreams.some(stream => matchesAssistantMessage(stream, message))) {
-				this.#completedStreams = this.#completedStreams.filter(stream => !matchesAssistantMessage(stream, message));
+			if (this.#completedStreams.some(stream => matchesPublishedAssistant(stream, message))) {
+				this.#completedStreams = this.#completedStreams.filter(
+					stream => !matchesPublishedAssistant(stream, message),
+				);
 			}
 		} else if (message.role === "toolResult") {
 			this.#publishedToolResults.add(message.toolCallId);
@@ -515,8 +553,8 @@ export class GuestClient {
 	#retainCompletedStream(message: AssistantMessage): void {
 		const published = this.#publishedAssistants
 			.get(message.timestamp)
-			?.some(entry => matchesAssistantMessage(message, entry));
-		if (!published && !this.#completedStreams.some(stream => matchesAssistantMessage(stream, message))) {
+			?.some(entry => matchesPublishedAssistant(message, entry));
+		if (!published && !this.#completedStreams.some(stream => matchesPublishedAssistant(stream, message))) {
 			this.#completedStreams = [...this.#completedStreams, message];
 		}
 	}
@@ -550,7 +588,11 @@ export class GuestClient {
 					this.#working = true;
 					const message = event.message;
 					this.#updateWorkingIntent(message);
-					if (this.#stream !== null && !matchesAssistantMessage(this.#stream, message, !this.#streamDone)) {
+					if (
+						this.#stream !== null &&
+						!matchesAssistantMessage(this.#stream, message, !this.#streamDone) &&
+						!matchesAssistantIdentity(this.#stream, message)
+					) {
 						if (!this.#streamDone) {
 							this.#retainCompletedStream(message);
 							break;
@@ -559,7 +601,7 @@ export class GuestClient {
 					}
 					const published = this.#publishedAssistants
 						.get(message.timestamp)
-						?.some(entry => matchesAssistantMessage(message, entry));
+						?.some(entry => matchesPublishedAssistant(message, entry));
 					this.#stream = published ? null : message;
 					this.#streamDone = !published;
 				}
@@ -624,7 +666,14 @@ export class GuestClient {
 				this.#workingIntent = null;
 				this.#executionIntents.clear();
 				this.#activeTools = new Map();
-				if (this.#stream !== null) this.#streamDone = true;
+				if (this.#pendingSnapshot === null) {
+					this.#stream = null;
+					this.#streamDone = false;
+					this.#completedStreams = [];
+					this.#liveResults = new Map();
+				} else if (this.#stream !== null) {
+					this.#streamDone = true;
+				}
 				break;
 			case "notice":
 				this.#pushNotice(event.level, event.message);

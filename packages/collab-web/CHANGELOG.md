@@ -19,6 +19,7 @@
 - Kept reasoning and opened tool output stable as streamed messages are saved, with one status line for the current tool intent ([#13597](https://github.com/can1357/oh-my-pi/pull/13597) by [@HACKE-RC](https://github.com/HACKE-RC)).
 - Displayed parent steering and inter-agent messages consistently in the main transcript and agent drawer, without raw IRC wrappers ([#13597](https://github.com/can1357/oh-my-pi/pull/13597) by [@HACKE-RC](https://github.com/HACKE-RC)).
 - Kept the visible message in place when scrolling up loads earlier history ([#13597](https://github.com/can1357/oh-my-pi/pull/13597) by [@HACKE-RC](https://github.com/HACKE-RC)).
+- Reconciled streamed assistant and tool-result ghosts with persisted entries even when obfuscation changes visible content ([#13597](https://github.com/can1357/oh-my-pi/pull/13597) by [@HACKE-RC](https://github.com/HACKE-RC)).
 
 ## [18.4.1] - 2026-09-28
 

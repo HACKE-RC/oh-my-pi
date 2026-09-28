@@ -6,6 +6,10 @@
 
 - Collab transcripts retain measured per-block thinking time, including interrupted reasoning, and show completed timing before the next tool preview ([#13597](https://github.com/can1357/oh-my-pi/pull/13597) by [@HACKE-RC](https://github.com/HACKE-RC)).
 
+### Fixed
+
+- Preserved assistant completion timing and abort metadata across session, persistence, and extension consumers ([#13597](https://github.com/can1357/oh-my-pi/pull/13597) by [@HACKE-RC](https://github.com/HACKE-RC)).
+
 ## [18.4.2] - 2026-09-28
 
 ### Added

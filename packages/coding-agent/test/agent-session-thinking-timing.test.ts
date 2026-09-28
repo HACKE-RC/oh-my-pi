@@ -107,7 +107,7 @@ describe("AgentSession thinking timing", () => {
 		update({ type: "thinking_end", contentIndex: 0, content: thinking.thinking, partial: preview }, 3_000);
 		update({ type: "toolcall_end", contentIndex: 1, toolCall, partial: preview }, 4_000);
 		now = 5_000;
-		const final = Object.freeze({ ...preview, stopReason: "toolUse" as const });
+		const final = { ...preview, stopReason: "toolUse" as const };
 		session.agent.emitExternalEvent({ type: "message_end", message: final });
 		session.agent.emitExternalEvent({
 			type: "message_end",
@@ -123,10 +123,12 @@ describe("AgentSession thinking timing", () => {
 		await session.waitForIdle();
 		await sessionManager.flush();
 
+		expect(updates[2]?.message).toBe(preview);
+		expect(updates[3]?.message).toBe(preview);
 		expect(ended[0].thinkingMs).toEqual({ 0: 1_200 });
-		expect(ended[0].content).toBe(final.content);
-		expect(final.thinkingMs).toBeUndefined();
-		expect(final.completedAt).toBeUndefined();
+		expect(ended[0]).toBe(final);
+		expect(final.thinkingMs).toEqual({ 0: 1_200 });
+		expect(final.completedAt).toEqual(expect.any(Number));
 		expect(session.messages.find(message => message.role === "assistant")).toBe(ended[0]);
 		expect(session.buildDisplaySessionContext().messages.find(message => message.role === "assistant")).toMatchObject(
 			{

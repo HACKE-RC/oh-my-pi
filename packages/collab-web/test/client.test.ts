@@ -216,6 +216,42 @@ describe("GuestClient frame apply", () => {
 		expect(snap.entries).toHaveLength(1);
 	});
 
+	it("reconciles a persisted assistant entry when its content is obfuscated", () => {
+		const client = liveClient();
+		const streamed = assistantMessage("key is hunter2");
+		const persisted: AssistantMessage = {
+			...streamed,
+			content: [{ type: "text", text: "key is $$A1B2$$" }],
+		};
+
+		client.applyFrameForTest({ t: "event", event: { type: "message_end", message: streamed } });
+		client.applyFrameForTest({ t: "entry", entry: messageEntry("obfuscated", persisted) });
+
+		expect(client.getSnapshot().stream).toBeNull();
+		expect(client.getSnapshot().streamDone).toBe(false);
+		expect(client.getSnapshot().entries).toEqual([messageEntry("obfuscated", persisted)]);
+	});
+
+	it("drops terminal ghosts and live tool results when no persisted entries arrive", () => {
+		const client = liveClient();
+		const message = assistantMessage("omitted assistant");
+
+		client.applyFrameForTest({ t: "event", event: { type: "message_end", message } });
+		client.applyFrameForTest({
+			t: "event",
+			event: { type: "tool_execution_end", toolCallId: "tc1", toolName: "read", result: "omitted result" },
+		});
+		expect(client.getSnapshot().stream).toEqual(message);
+		expect(client.getSnapshot().liveResults.size).toBe(1);
+
+		client.applyFrameForTest({ t: "event", event: { type: "agent_end" } });
+
+		expect(client.getSnapshot().stream).toBeNull();
+		expect(client.getSnapshot().streamDone).toBe(false);
+		expect(client.getSnapshot().completedStreams).toEqual([]);
+		expect(client.getSnapshot().liveResults.size).toBe(0);
+	});
+
 	it("keeps reasoning through unrelated entries and idle before its own entry", () => {
 		const client = liveClient();
 		const message: AssistantMessage = {
@@ -223,7 +259,10 @@ describe("GuestClient frame apply", () => {
 			content: [{ type: "thinking", thinking: "Keep the full reasoning on screen." }],
 		};
 		client.applyFrameForTest({ t: "event", event: { type: "message_end", message } });
-		client.applyFrameForTest({ t: "entry", entry: messageEntry("unrelated", assistantMessage("Older reply")) });
+		client.applyFrameForTest({
+			t: "entry",
+			entry: messageEntry("unrelated", { ...assistantMessage("Older reply"), timestamp: 2 }),
+		});
 		client.applyFrameForTest({ t: "state", state: STATE });
 		expect(client.getSnapshot().working).toBe(false);
 		expect(client.getSnapshot().stream).toEqual(message);
