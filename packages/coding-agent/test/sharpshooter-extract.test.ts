@@ -11,6 +11,7 @@ import { Settings } from "@oh-my-pi/pi-coding-agent/config/settings";
 import type { AgentSession } from "@oh-my-pi/pi-coding-agent/session/agent-session";
 import {
 	buildSharpshooterEnvelope,
+	flushSharpshooterExtraction,
 	maybeStartSharpshooterExtraction,
 } from "@oh-my-pi/pi-coding-agent/sharpshooter/extract";
 import { listSharpshooterDeltas } from "@oh-my-pi/pi-coding-agent/sharpshooter/queue";
@@ -181,7 +182,7 @@ describe("maybeStartSharpshooterExtraction", () => {
 				session: deps.session,
 				settings: deps.settings,
 			});
-			await waitFor(async () => (await listSharpshooterDeltas(agentDir, cwd)).length === 1, "delta was not queued");
+			await flushSharpshooterExtraction(deps.session);
 
 			const groups = await listSharpshooterDeltas(agentDir, cwd);
 			expect(groups).toHaveLength(1);
