@@ -26,7 +26,7 @@ body {
 }
 
 body {
-	font: 400 13px / 1.5 var(--font-ui);
+	font: 400 14px / 1.55 var(--font-ui);
 	background: var(--bg);
 	color: var(--fg);
 	-webkit-font-smoothing: antialiased;

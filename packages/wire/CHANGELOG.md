@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+
+- Collab assistant messages carry optional per-block thinking durations for streaming and replayed transcripts; older unmeasured sessions remain compatible.
+
 ## [18.2.11] - 2026-09-23
 
 ### Added

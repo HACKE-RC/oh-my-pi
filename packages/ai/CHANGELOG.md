@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+
+- Assistant messages expose optional per-block `thinkingMs` measurements on partial and persisted messages, without estimating unobserved reasoning time.
+
 ## [18.3.4] - 2026-09-27
 
 ### Fixed

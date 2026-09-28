@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+
+- Collab transcripts retain measured per-block thinking time, including interrupted reasoning, and show completed timing before the next tool preview.
+
 ## [18.3.4] - 2026-09-27
 
 ### Breaking Changes

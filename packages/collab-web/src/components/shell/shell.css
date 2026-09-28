@@ -3,12 +3,11 @@
 /* ---- app frame ---- */
 .sh-app {
 	display: grid;
-	grid-template-rows: auto 1fr auto;
+	grid-template-rows: auto 1fr;
 	/* Single column pinned to the container width: an `auto` track sizes to its
 	 * items' min-content, so a long session title (or the fixed header controls)
-	 * would force every row — header, transcript, composer — wider than a narrow
-	 * viewport and clip the right edge. `minmax(0, 1fr)` caps the track so rows
-	 * shrink and ellipsize instead of overflowing. */
+	 * would force every row wider than a narrow viewport and clip the right
+	 * edge. `minmax(0, 1fr)` caps the track so rows shrink and ellipsize. */
 	grid-template-columns: minmax(0, 1fr);
 	height: var(--viewport-height, 100%);
 }
@@ -19,25 +18,21 @@
 	overflow: hidden;
 }
 
+/* Transcript + prompt dock share one pane so the dock always aligns with the reading column. */
 .sh-content {
 	flex: 1;
 	min-width: 0;
 	min-height: 0;
 	display: flex;
-	justify-content: center;
+	flex-direction: column;
 	overflow: hidden;
 }
 
 .sh-transcript {
-	width: 100%;
-	max-width: 880px;
+	flex: 1;
 	min-height: 0;
 	display: flex;
 	flex-direction: column;
-}
-
-.sh-content[data-rail="true"] .sh-transcript {
-	max-width: none;
 }
 
 .sh-transcript > * {
@@ -46,7 +41,7 @@
 }
 
 .sh-rail {
-	width: 300px;
+	width: 320px;
 	flex: none;
 	min-height: 0;
 	overflow-y: auto;
@@ -58,22 +53,38 @@
 	display: none;
 }
 
+/* ---- brand mark ---- */
+.sh-mark {
+	flex: none;
+	display: block;
+}
+
+.sh-mark-tile {
+	fill: var(--bg-inset);
+	stroke: var(--border-strong);
+	stroke-width: 1.5;
+}
+
 /* ---- shared controls ---- */
 .sh-btn {
 	display: inline-flex;
 	align-items: center;
-	gap: 5px;
-	padding: 4px 10px;
-	font-size: 12px;
+	justify-content: center;
+	gap: 6px;
+	height: 30px;
+	padding: 0 12px;
+	font-size: 12.5px;
 	font-weight: 500;
 	color: var(--fg-muted);
 	background: var(--bg-raised);
 	border: 1px solid var(--border);
 	border-radius: var(--radius);
+	white-space: nowrap;
 	transition:
 		background 150ms ease-out,
 		color 150ms ease-out,
-		border-color 150ms ease-out;
+		border-color 150ms ease-out,
+		opacity 150ms ease-out;
 }
 
 .sh-btn:hover:not(:disabled) {
@@ -83,85 +94,102 @@
 }
 
 .sh-btn:active:not(:disabled) {
-	transform: scale(0.97);
+	transform: scale(0.98);
 }
 
 .sh-btn:disabled {
-	opacity: 0.45;
+	opacity: 0.4;
 	cursor: default;
 }
 
 .sh-btn-primary {
 	color: var(--accent-fg);
 	background: var(--accent);
-	border-color: var(--accent);
+	border-color: transparent;
 }
 
 .sh-btn-primary:hover:not(:disabled) {
 	color: var(--accent-fg);
 	background: var(--accent);
-	border-color: var(--accent);
-	filter: brightness(1.04);
+	border-color: transparent;
+	filter: brightness(1.06);
+}
+
+/* Empty draft: a quiet outline instead of a washed-out pink slab. */
+.sh-btn-send:disabled {
+	opacity: 1;
+	color: var(--fg-ghost);
+	background: transparent;
+	border-color: var(--border);
 }
 
 .sh-btn-stop {
 	color: var(--err);
-	border-color: var(--border-strong);
+	background: color-mix(in oklch, var(--err) 8%, transparent);
+	border-color: color-mix(in oklch, var(--err) 30%, transparent);
 }
 
-.sh-btn-icon {
-	position: relative;
-	padding: 4px 6px;
+.sh-btn-stop:hover:not(:disabled) {
+	color: var(--err);
+	background: color-mix(in oklch, var(--err) 14%, transparent);
+	border-color: color-mix(in oklch, var(--err) 45%, transparent);
 }
 
-.sh-btn-on {
-	color: var(--accent);
-	border-color: var(--border-strong);
-}
-
-/* ---- theme toggle (system / light / dark) ---- */
+/* Ghost icon button: header and drawer chrome. */
+.sh-iconbtn,
 .sh-theme-toggle {
+	position: relative;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	width: 32px;
+	gap: 5px;
+	min-width: 32px;
 	height: 32px;
+	padding: 0 8px;
 	flex-shrink: 0;
-	border: 1px solid var(--border);
+	color: var(--fg-faint);
+	background: none;
+	border: 1px solid transparent;
 	border-radius: var(--radius);
-	background: var(--bg-raised);
-	color: var(--fg-muted);
-	cursor: pointer;
-	transition: color 0.14s ease, background 0.14s ease, border-color 0.14s ease;
+	transition:
+		color 150ms ease-out,
+		background 150ms ease-out,
+		border-color 150ms ease-out;
 }
 
+.sh-iconbtn:hover,
 .sh-theme-toggle:hover {
 	color: var(--fg);
-	border-color: var(--border-strong);
+	background: var(--bg-hover);
+}
+
+.sh-iconbtn-on {
+	color: var(--fg);
+	background: var(--bg-raised);
+	border-color: var(--border);
+}
+
+.sh-count {
+	min-width: 16px;
+	height: 16px;
+	padding: 0 4px;
+	font: 600 10px / 16px var(--font-mono);
+	text-align: center;
+	color: var(--accent-fg);
+	background: var(--accent);
+	border-radius: 8px;
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.sh-theme-toggle {
+	.sh-theme-toggle,
+	.sh-iconbtn,
+	.sh-btn {
 		transition: none;
 	}
 }
 
-.sh-badge {
-	position: absolute;
-	top: -5px;
-	right: -5px;
-	min-width: 14px;
-	height: 14px;
-	padding: 0 3px;
-	font: 600 9px / 14px var(--font-mono);
-	text-align: center;
-	color: var(--accent-fg);
-	background: var(--accent);
-	border-radius: 7px;
-}
-
 .sh-chip {
-	padding: 1px 6px;
+	padding: 1px 7px;
 	font: 400 11px / 1.5 var(--font-mono);
 	color: var(--fg-muted);
 	background: var(--bg-raised);
@@ -175,14 +203,22 @@
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	gap: 12px;
-	padding: 8px 12px;
+	gap: 16px;
+	min-height: 52px;
+	padding: 8px 12px 8px 18px;
 	padding-top: calc(8px + env(safe-area-inset-top, 0px));
 	border-bottom: 1px solid var(--border);
 	background: var(--bg);
 }
 
 .sh-header-left {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	min-width: 0;
+}
+
+.sh-heading {
 	display: flex;
 	align-items: baseline;
 	gap: 10px;
@@ -192,13 +228,14 @@
 .sh-header-right {
 	display: flex;
 	align-items: center;
-	gap: 8px;
+	gap: 6px;
 	flex: none;
 }
 
 .sh-title {
-	font-size: 13px;
+	font-size: 14px;
 	font-weight: 600;
+	letter-spacing: -0.005em;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -206,7 +243,7 @@
 }
 
 .sh-cwd {
-	font: 400 11px / 1.5 var(--font-mono);
+	font: 400 12px / 1.5 var(--font-mono);
 	color: var(--fg-faint);
 	white-space: nowrap;
 	overflow: hidden;
@@ -214,112 +251,139 @@
 	min-width: 0;
 }
 
-.sh-gauge {
+.sh-sep {
+	width: 1px;
+	height: 18px;
+	margin: 0 4px;
+	background: var(--border);
+}
+
+/* Connection state: the one thing a guest must never misread. */
+.sh-live {
 	display: inline-flex;
 	align-items: center;
-	gap: 6px;
-}
-
-.sh-gauge-track {
-	width: 72px;
-	height: 4px;
-	background: var(--border-strong);
-	border-radius: var(--radius-sm);
-	overflow: hidden;
-}
-
-.sh-gauge-fill {
-	display: block;
-	height: 100%;
-	background: var(--accent);
-	border-radius: inherit;
-	transition: width 150ms ease-out;
-}
-
-.sh-gauge-warn .sh-gauge-fill {
-	background: var(--warn);
-}
-
-.sh-gauge-pct {
-	font: 400 11px / 1 var(--font-mono);
+	gap: 7px;
+	height: 24px;
+	padding: 0 10px 0 9px;
+	margin-right: 4px;
+	font: 500 11.5px / 1 var(--font-mono);
 	color: var(--fg-muted);
+	border: 1px solid var(--border);
+	border-radius: 999px;
 }
 
-.sh-gauge-warn .sh-gauge-pct {
-	color: var(--warn);
-}
-
-.sh-avatars {
-	display: inline-flex;
-}
-
-.sh-avatar {
-	width: 20px;
-	height: 20px;
-	font: 600 10px / 18px var(--font-ui);
-	text-align: center;
-	color: var(--fg-muted);
-	background: var(--bg-raised);
-	border: 1px solid var(--border-strong);
-	border-radius: 50%;
-	margin-left: -4px;
-}
-
-.sh-avatar:first-child {
-	margin-left: 0;
-}
-
-.sh-avatar-host {
-	color: var(--accent);
-	border-color: var(--accent);
-}
-
-.sh-dot {
-	width: 8px;
-	height: 8px;
+.sh-live-dot {
+	width: 7px;
+	height: 7px;
 	border-radius: 50%;
 	background: var(--fg-faint);
 }
 
-.sh-dot-live {
-	background: var(--ok);
+.sh-live-live {
+	color: var(--ok);
+	border-color: color-mix(in oklch, var(--ok) 30%, transparent);
+	background: color-mix(in oklch, var(--ok) 8%, transparent);
 }
 
-.sh-dot-reconnecting {
+.sh-live-live .sh-live-dot {
+	background: var(--ok);
+	box-shadow: 0 0 0 3px color-mix(in oklch, var(--ok) 22%, transparent);
+}
+
+.sh-live-connecting .sh-live-dot,
+.sh-live-waiting .sh-live-dot,
+.sh-live-reconnecting .sh-live-dot {
 	background: var(--warn);
 	animation: pulse 1.2s ease-in-out infinite;
 }
 
-.sh-dot-ended {
+.sh-live-reconnecting {
+	color: var(--warn);
+	border-color: color-mix(in oklch, var(--warn) 30%, transparent);
+}
+
+.sh-live-ended {
+	color: var(--err);
+	border-color: color-mix(in oklch, var(--err) 30%, transparent);
+}
+
+.sh-live-ended .sh-live-dot {
 	background: var(--err);
 }
 
-/* ---- composer ---- */
+.sh-presence {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	max-width: 220px;
+	min-width: 0;
+	padding: 0 4px;
+	color: var(--fg-faint);
+	font: 400 12.5px / 1 var(--font-ui);
+	cursor: default;
+}
+
+.sh-presence svg {
+	flex: none;
+}
+
+.sh-presence-names {
+	min-width: 0;
+	overflow: hidden;
+	color: var(--fg-muted);
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.sh-presence-more {
+	color: var(--fg-faint);
+}
+
+/* Narrow headers show only the head count. */
+.sh-presence-count {
+	display: none;
+	font-variant-numeric: tabular-nums;
+}
+
+/* ---- composer dock ---- */
 .sh-composer {
-	padding: 10px 12px;
-	padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
-	border-top: 1px solid var(--border);
+	flex: none;
+	padding: 0 max(20px, calc((100% - var(--column)) / 2)) 16px;
+	padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+	background: linear-gradient(to bottom, transparent, var(--bg) 14px);
+}
+
+.sh-dock {
+	display: flex;
+	flex-direction: column;
+	border: 1px solid var(--border-strong);
+	border-radius: var(--radius-xl);
+	background: var(--bg-raised);
+	box-shadow: var(--shadow-dock);
+	transition: border-color 150ms ease-out;
+}
+
+.sh-dock:focus-within {
+	border-color: var(--ring);
+}
+
+.sh-dock-idle {
+	box-shadow: none;
+	border-color: var(--border);
 	background: var(--bg);
 }
 
-.sh-composer-inner {
-	display: flex;
-	align-items: flex-end;
-	gap: 8px;
-	max-width: 880px;
-	margin: 0 auto;
-}
-
 .sh-composer-input {
-	flex: 1;
+	display: block;
+	width: 100%;
 	min-width: 0;
-	padding: 8px 10px;
-	font-size: 13px;
-	line-height: 20px;
+	padding: 12px 16px 4px;
+	font-size: 14px;
+	line-height: 22px;
 	color: var(--fg);
-	background: var(--bg-inset);
-	border: 1px solid var(--border);
-	border-radius: var(--radius);
+	background: transparent;
+	border: 0;
+	border-radius: var(--radius-xl) var(--radius-xl) 0 0;
 	resize: none;
 }
 
@@ -328,16 +392,90 @@
 }
 
 .sh-composer-input:disabled {
-	opacity: 0.55;
+	cursor: default;
 }
 
 .sh-composer-input:focus-visible {
-	outline: 2px solid transparent;
-	outline-offset: 0;
+	outline: none;
 }
 
-.sh-composer-input:focus {
-	border-color: var(--ring);
+.sh-dock-bar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	min-height: 44px;
+	padding: 6px 8px 8px 16px;
+}
+
+.sh-dock-meta {
+	display: flex;
+	align-items: center;
+	gap: 0;
+	min-width: 0;
+	overflow: hidden;
+	font: 400 11.5px / 1 var(--font-mono);
+	color: var(--fg-faint);
+	white-space: nowrap;
+}
+
+.sh-dock-item {
+	display: inline-flex;
+	align-items: center;
+	flex: none;
+}
+
+.sh-dock-item + .sh-dock-item::before {
+	content: "";
+	width: 3px;
+	height: 3px;
+	margin: 0 10px;
+	border-radius: 50%;
+	background: var(--fg-ghost);
+}
+
+.sh-dock-model {
+	flex: 0 1 auto;
+	min-width: 0;
+	overflow: hidden;
+	color: var(--fg-muted);
+	text-overflow: ellipsis;
+}
+
+.sh-gauge {
+	gap: 7px;
+}
+
+.sh-gauge-track {
+	width: 56px;
+	height: 4px;
+	background: var(--border-strong);
+	border-radius: 2px;
+	overflow: hidden;
+}
+
+.sh-gauge-fill {
+	display: block;
+	height: 100%;
+	background: var(--fg-muted);
+	border-radius: inherit;
+	transition: width 150ms ease-out;
+}
+
+.sh-gauge-pct {
+	font-variant-numeric: tabular-nums;
+}
+
+.sh-gauge-warn {
+	color: var(--warn);
+}
+
+.sh-gauge-warn .sh-gauge-fill {
+	background: var(--warn);
+}
+
+.sh-queued {
+	color: var(--accent);
 }
 
 .sh-composer-actions {
@@ -345,18 +483,28 @@
 	align-items: center;
 	gap: 6px;
 	flex: none;
-	padding-bottom: 1px;
 }
 
-.sh-composer-ask {
+/* ---- ask (host UI request) ---- */
+.sh-dock-ask {
+	border-color: color-mix(in oklch, var(--accent) 45%, var(--border-strong));
+}
+
+.sh-ask-head {
 	display: grid;
-	gap: 8px;
+	gap: 2px;
+	padding: 12px 16px 4px;
+}
+
+.sh-ask-kicker {
+	font: 500 10.5px / 1.4 var(--font-mono);
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: var(--accent);
 }
 
 .sh-ask-title {
-	max-width: 880px;
-	margin: 0 auto;
-	font-size: 13px;
+	font-size: 14px;
 	font-weight: 600;
 	color: var(--fg);
 	white-space: pre-wrap;
@@ -364,36 +512,41 @@
 
 .sh-ask-options {
 	display: grid;
-	gap: 6px;
-	max-width: 880px;
-	margin: 0 auto;
+	gap: 4px;
+	padding: 6px 8px 0;
+	max-height: 40vh;
+	overflow-y: auto;
 }
 
 .sh-ask-option {
 	display: flex;
 	align-items: flex-start;
-	gap: 8px;
+	gap: 10px;
 	width: 100%;
 	padding: 8px 10px;
 	color: var(--fg);
 	text-align: left;
-	background: var(--bg-inset);
-	border: 1px solid var(--border);
-	border-radius: var(--radius);
+	background: none;
+	border: 1px solid transparent;
+	border-radius: var(--radius-lg);
+	transition:
+		background 150ms ease-out,
+		border-color 150ms ease-out;
 }
 
 .sh-ask-option:hover {
-	border-color: var(--ring);
+	background: var(--bg-hover);
+	border-color: var(--border);
 }
 
 .sh-ask-option-checked {
-	border-color: var(--accent);
-	background: var(--accent-muted);
+	border-color: var(--accent-muted);
+	background: var(--accent-soft);
 }
 
 .sh-ask-option-marker {
-	width: 18px;
-	font: 400 13px / 18px var(--font-mono);
+	width: 16px;
+	font: 400 13px / 20px var(--font-mono);
 	color: var(--accent);
 }
 
@@ -404,55 +557,48 @@
 }
 
 .sh-ask-option-label {
-	font-size: 13px;
+	font-size: 13.5px;
 	font-weight: 500;
+	line-height: 20px;
 }
 
 .sh-ask-option-description {
-	font-size: 12px;
-	line-height: 1.35;
+	font-size: 12.5px;
+	line-height: 1.4;
 	color: var(--fg-muted);
 }
 
-.sh-ask-actions {
-	justify-content: flex-end;
-	max-width: 880px;
-	width: 100%;
-	margin: 0 auto;
-}
-
-.sh-queued {
-	padding: 1px 6px;
-	font: 400 11px / 1.5 var(--font-mono);
-	color: var(--accent);
-	background: var(--accent-muted);
-	border-radius: var(--radius-sm);
-	white-space: nowrap;
+.sh-ask-editor {
+	display: flex;
+	align-items: flex-end;
+	gap: 8px;
+	padding-right: 8px;
 }
 
 /* ---- banners ---- */
 .sh-banner {
 	position: fixed;
-	top: 8px;
+	top: 62px;
 	left: 50%;
 	transform: translateX(-50%);
 	z-index: 50;
 	display: flex;
 	align-items: center;
-	gap: 6px;
-	padding: 3px 12px;
-	font-size: 12px;
+	gap: 8px;
+	height: 30px;
+	padding: 0 14px;
+	font: 500 12px / 1 var(--font-mono);
 	white-space: nowrap;
-	color: var(--warn);
+	color: var(--fg-muted);
 	background: var(--bg-overlay);
 	border: 1px solid var(--border-strong);
-	border-radius: var(--radius);
+	border-radius: 999px;
 	box-shadow: var(--shadow-overlay);
 }
 
 .sh-banner-dot {
-	width: 6px;
-	height: 6px;
+	width: 7px;
+	height: 7px;
 	border-radius: 50%;
 	background: var(--warn);
 	animation: pulse 1.2s ease-in-out infinite;
@@ -464,76 +610,88 @@
 	z-index: 50;
 	display: grid;
 	place-items: center;
+	padding: 16px;
 	background: var(--backdrop);
+	backdrop-filter: blur(2px);
 }
 
 .sh-ended-card {
 	width: 100%;
-	max-width: 320px;
+	max-width: 360px;
 	padding: 24px;
 	display: flex;
 	flex-direction: column;
-	gap: 10px;
+	gap: 8px;
 	background: var(--bg-overlay);
 	border: 1px solid var(--border-strong);
-	border-radius: var(--radius-lg);
+	border-radius: var(--radius-xl);
 	box-shadow: var(--shadow-overlay);
 }
 
 .sh-ended-title {
-	font-size: 14px;
+	font-size: 16px;
 	font-weight: 600;
 }
 
 .sh-ended-reason {
-	font-size: 12px;
+	font-size: 13px;
 	color: var(--fg-muted);
+	overflow-wrap: anywhere;
 }
 
 .sh-ended-actions {
 	display: flex;
 	gap: 8px;
-	margin-top: 6px;
+	margin-top: 12px;
 }
 
 /* ---- toasts ---- */
 .sh-toasts {
 	position: fixed;
-	right: 12px;
-	left: 12px;
-	bottom: 12px;
+	right: 16px;
+	left: 16px;
+	bottom: 16px;
 	z-index: 60;
 	display: flex;
 	flex-direction: column;
 	gap: 8px;
-	max-width: 320px;
+	max-width: 340px;
 	margin-left: auto;
 }
 
 .sh-toast {
 	display: flex;
 	align-items: flex-start;
-	gap: 8px;
-	padding: 8px 10px;
-	font-size: 12px;
+	gap: 10px;
+	padding: 10px 12px;
+	font-size: 12.5px;
 	color: var(--fg);
 	background: var(--bg-overlay);
 	border: 1px solid var(--border-strong);
-	border-left-width: 2px;
 	border-radius: var(--radius-lg);
 	box-shadow: var(--shadow-overlay);
 }
 
-.sh-toast-info {
-	border-left-color: var(--accent);
+.sh-toast::before {
+	content: "";
+	flex: none;
+	width: 7px;
+	height: 7px;
+	margin-top: 6px;
+	border-radius: 50%;
+	background: var(--fg-faint);
 }
 
-.sh-toast-warning {
-	border-left-color: var(--warn);
+.sh-toast-info::before {
+	background: var(--accent);
 }
 
-.sh-toast-error {
-	border-left-color: var(--err);
+.sh-toast-warning::before {
+	background: var(--warn);
+}
+
+.sh-toast-error::before {
+	background: var(--err);
 }
 
 .sh-toast-msg {
@@ -545,7 +703,7 @@
 .sh-toast-close {
 	flex: none;
 	display: inline-flex;
-	padding: 1px;
+	padding: 2px;
 	color: var(--fg-faint);
 	background: none;
 	border: none;
@@ -558,117 +716,181 @@
 
 /* ---- connect screen ---- */
 .sh-connect {
+	position: relative;
 	height: 100%;
 	display: grid;
 	place-items: center;
+	overflow-y: auto;
 	background: var(--bg);
-	padding: 16px;
-	padding-top: calc(16px + env(safe-area-inset-top, 0px));
-	padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+	padding: 24px;
+	padding-top: calc(24px + env(safe-area-inset-top, 0px));
+	padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
 }
 
-.sh-connect-card {
+.sh-connect-corner {
+	position: absolute;
+	top: calc(12px + env(safe-area-inset-top, 0px));
+	right: 12px;
+}
+
+.sh-connect-panel {
 	width: 100%;
-	max-width: 380px;
-	padding: 28px;
-	position: relative;
+	max-width: 400px;
 	display: flex;
 	flex-direction: column;
-	gap: 12px;
-	background: var(--bg-raised);
-	border: 1px solid var(--border);
-	border-radius: var(--radius-lg);
+	gap: 24px;
 }
 
-.sh-connect-head {
+.sh-connect-brand {
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
 	gap: 12px;
 }
 
-.sh-lockup {
-	display: inline-flex;
-	align-items: center;
-	gap: 8px;
-	font: 500 15px / 1.5 var(--font-mono);
+.sh-connect-wordmark {
+	font: 500 14px / 1 var(--font-mono);
 	letter-spacing: 0.02em;
-	margin: 0;
+	color: var(--fg-muted);
 }
 
-.sh-lockup-mark {
-	width: 16px;
-	height: 16px;
-	flex: none;
-	background: var(--brand-mark-gradient);
-	border-radius: 4px;
+.sh-connect-copy {
+	display: grid;
+	gap: 6px;
 }
 
-.sh-lockup-pi {
-	color: var(--accent);
+.sh-connect-title {
+	font-size: 24px;
+	font-weight: 650;
+	line-height: 1.2;
+	letter-spacing: -0.015em;
 }
 
 .sh-connect-sub {
-	font-size: 12px;
+	font-size: 14px;
 	color: var(--fg-muted);
-	margin-top: -4px;
 }
 
-.sh-field-hint {
-	font-size: 11px;
-	color: var(--fg-faint);
+.sh-connect-fields {
+	display: grid;
+	gap: 16px;
 }
 
 .sh-field {
 	display: flex;
 	flex-direction: column;
-	gap: 4px;
+	gap: 6px;
 }
 
 .sh-field-label {
-	font-size: 11px;
+	font-size: 12.5px;
 	font-weight: 500;
-	letter-spacing: 0.06em;
-	text-transform: uppercase;
+	color: var(--fg-muted);
+}
+
+.sh-field-hint {
+	font-size: 12px;
 	color: var(--fg-faint);
+}
+
+.sh-field-hint code {
+	padding: 0 4px;
+	font-size: 11.5px;
+	color: var(--fg-muted);
+	background: var(--bg-inset);
+	border: 1px solid var(--border-soft);
+	border-radius: var(--radius-sm);
 }
 
 .sh-input {
-	padding: 6px 9px;
-	font-size: 13px;
+	height: 40px;
+	padding: 0 12px;
+	font-size: 14px;
 	color: var(--fg);
 	background: var(--bg-inset);
 	border: 1px solid var(--border);
-	border-radius: var(--radius);
+	border-radius: var(--radius-lg);
+	transition: border-color 150ms ease-out;
 }
 
 .sh-input::placeholder {
-	color: var(--fg-faint);
+	color: var(--fg-ghost);
+}
+
+.sh-input:hover {
+	border-color: var(--border-strong);
 }
 
 .sh-input:focus-visible {
-	outline: 2px solid transparent;
-	outline-offset: 0;
+	outline: none;
 }
 
 .sh-input:focus {
 	border-color: var(--ring);
 }
 
+.sh-input[aria-invalid="true"] {
+	border-color: color-mix(in oklch, var(--err) 55%, transparent);
+}
+
 .sh-input-mono {
 	font-family: var(--font-mono);
+	font-size: 13px;
+}
+
+.sh-connect-warning {
+	display: flex;
+	align-items: flex-start;
+	gap: 10px;
+	padding: 12px 14px;
+	border: 1px solid color-mix(in oklch, var(--warn) 35%, transparent);
+	border-radius: var(--radius-lg);
+	background: color-mix(in oklch, var(--warn) 8%, transparent);
+	color: var(--fg-muted);
+	font-size: 13px;
+	line-height: 1.5;
+}
+
+.sh-connect-warning svg {
+	flex: none;
+	margin-top: 2px;
+	color: var(--warn);
+}
+
+.sh-connect-warning code {
+	padding: 0 4px;
 	font-size: 12px;
+	color: var(--fg);
+	background: var(--bg-inset);
+	border-radius: var(--radius-sm);
+	overflow-wrap: anywhere;
 }
 
 .sh-connect-error {
-	font-size: 12px;
+	margin-top: -12px;
+	font-size: 13px;
 	color: var(--err);
 }
 
 .sh-connect-submit {
-	justify-content: center;
-	padding: 7px 10px;
-	margin-top: 8px;
+	height: 40px;
+	font-size: 14px;
+	border-radius: var(--radius-lg);
+}
+
+.sh-connect-note {
+	display: flex;
+	align-items: flex-start;
+	gap: 8px;
+	padding-top: 16px;
+	border-top: 1px solid var(--border-soft);
+	font-size: 12px;
+	line-height: 1.5;
+	color: var(--fg-faint);
+}
+
+.sh-connect-note svg {
+	flex: none;
+	margin-top: 2px;
 }
 
 /* ---- responsive mobile styles ---- */
@@ -682,7 +904,7 @@
 		top: 0;
 		bottom: 0;
 		z-index: 30;
-		width: 280px;
+		width: 300px;
 		max-width: 85vw;
 		border-left: 1px solid var(--border-strong);
 		box-shadow: var(--rail-mobile-shadow);
@@ -707,23 +929,35 @@
 }
 
 @media (max-width: 640px) {
-	.sh-cwd {
-		display: none;
+	.sh-header {
+		padding-left: 14px;
+		gap: 8px;
 	}
-	.sh-chip-meta {
-		display: none;
-	}
-	.sh-gauge-track {
-		display: none;
-	}
-	.sh-btn-label {
-		display: none;
-	}
+	.sh-presence-names,
+	.sh-cwd,
+	.sh-live-label,
+	.sh-sep,
+	.sh-dock-model,
+	.sh-gauge-track,
+	.sh-btn-label,
 	.sh-queued-label {
 		display: none;
 	}
+	.sh-live {
+		padding: 0 8px;
+	}
+	.sh-presence-count {
+		display: inline;
+	}
+	.sh-dock-model + .sh-dock-item::before {
+		display: none;
+	}
+	.sh-composer {
+		padding-inline: 10px;
+		padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+	}
 	.sh-composer-actions .sh-btn {
-		padding: 8px;
+		padding: 0 10px;
 	}
 	.sh-composer-input,
 	.sh-input,

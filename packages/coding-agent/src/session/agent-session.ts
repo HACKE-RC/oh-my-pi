@@ -252,6 +252,7 @@ import type { EditMode } from "@oh-my-pi/pi-tui/tools/edit";
 import { resolveFileDisplayMode } from "../utils/file-display-mode";
 import { extractFileMentions, generateFileMentionMessages } from "../utils/file-mentions";
 import { normalizeModelContextImages } from "../utils/image-loading";
+import { ThinkingClock } from "../utils/thinking-clock";
 import { TokenRateMeter } from "../utils/token-rate";
 import { imageAttachmentSource } from "@oh-my-pi/pi-tui/prompt/image-source";
 import { resumeCommand } from "../utils/resume-command";
@@ -1396,6 +1397,8 @@ export class AgentSession implements SettingsScope {
 
 	/** Live generation tok/s for the working row; fed by this session's own streamed deltas. */
 	readonly tokenRate: TokenRateMeter;
+	/** Per-block observed thinking time, exposed as each block closes and persisted at message_end. */
+	#thinkingClock = new ThinkingClock();
 
 	constructor(config: AgentSessionConfig) {
 		this.agent = config.agent;
@@ -3348,6 +3351,33 @@ export class AgentSession implements SettingsScope {
 
 	#processAgentEvent = async (event: AgentEvent): Promise<void> => {
 		const eventPromptGeneration = this.#promptGeneration;
+		// Observe before any awaited fan-out, and replace only envelopes: agent-core
+		// shares read-only content blocks across partial snapshots. Keep the live
+		// state on the same timed envelope for transcript rebuilds during a turn.
+		if (event.type === "message_start" && event.message.role === "assistant") {
+			this.#thinkingClock.begin(performance.now());
+		} else if (event.type === "message_update" && event.message.role === "assistant") {
+			const delta = event.assistantMessageEvent;
+			const thinkingMs = this.#thinkingClock.observe(delta, performance.now());
+			if (thinkingMs && "partial" in delta) {
+				const message: AssistantMessage = { ...event.message, thinkingMs };
+				if (this.agent.state.streamMessage === event.message) this.agent.state.streamMessage = message;
+				event = { ...event, message, assistantMessageEvent: { ...delta, partial: message } };
+			}
+		} else if (event.type === "message_end" && event.message.role === "assistant") {
+			const previous = event.message;
+			const thinkingMs = this.#thinkingClock.finish(performance.now());
+			// Local completion time for prompt→yield timing, independent of provider
+			// duration and timestamp conventions. Persisted and read on rebuild.
+			const message: AssistantMessage = {
+				...previous,
+				completedAt: Date.now(),
+				...(thinkingMs ? { thinkingMs } : {}),
+			};
+			const index = this.agent.state.messages.lastIndexOf(previous);
+			if (index !== -1) this.agent.state.messages[index] = message;
+			event = { ...event, message };
+		}
 		// A fresh run supersedes the previously settled (and pruned) refusal
 		// turn: state-based lookups take over again.
 		if (event.type === "agent_start") {
@@ -3460,13 +3490,6 @@ export class AgentSession implements SettingsScope {
 			this.agent.steer(checkpointReminder);
 		}
 
-		// Local completion time for prompt→yield timing: stamped here, not by the
-		// provider, so the usage row's Δ is exact and provider-independent — some
-		// providers never report `duration` (gitlab-duo) or stamp `timestamp` at
-		// request start. Persisted with the message and read on rebuild.
-		if (event.type === "message_end" && event.message.role === "assistant") {
-			event.message.completedAt = Date.now();
-		}
 		// Turn-boundary maintenance awaits this commit before draining steering;
 		// extension notifications must not own or delay the persistence work.
 		const messageEndPersistence =

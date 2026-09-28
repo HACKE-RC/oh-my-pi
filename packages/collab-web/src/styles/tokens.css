@@ -1,50 +1,67 @@
-/* Design tokens — omp brand palette: deep-purple surfaces, pink accent, cyan
- * focus ring. Dark is the default; `[data-theme="light"]` and the
- * prefers-color-scheme light fallback flip to light surfaces.
- * The ONLY file allowed to contain raw color values. */
+/* Design tokens — "control room at night": aubergine surfaces from the omp brand
+ * (#0f0a14), phosphor-white text, brand pink as the human voice (caret, prompts,
+ * primary action), brand cyan for focus. Dark is the default;
+ * `[data-theme="light"]` and the prefers-color-scheme light fallback flip to
+ * paper surfaces. The ONLY file allowed to contain raw color values. */
 :root {
 	color-scheme: dark;
 
-	/* surfaces — neutral ramp tinted by the brand purple (hue 307, anchored to #0f0a14) */
-	--bg: oklch(0.16 0.02 307);
-	--bg-raised: oklch(0.19 0.022 307);
-	--bg-inset: oklch(0.13 0.016 307);
-	--bg-overlay: oklch(0.235 0.026 307);
+	/* surfaces — one hue (307), lightness-only steps a few points apart */
+	--bg: oklch(0.155 0.018 307);
+	--bg-raised: oklch(0.185 0.021 307);
+	--bg-inset: oklch(0.128 0.015 307);
+	--bg-overlay: oklch(0.21 0.024 307);
+	--bg-hover: oklch(1 0 0 / 4.5%);
 
-	/* text */
-	--fg: oklch(0.92 0.01 307);
-	--fg-muted: oklch(0.71 0.016 307);
-	--fg-faint: oklch(0.53 0.018 307);
+	/* text — primary, supporting, metadata, ghost (disabled/placeholder) */
+	--fg: oklch(0.93 0.008 307);
+	--fg-muted: oklch(0.75 0.014 307);
+	--fg-faint: oklch(0.58 0.017 307);
+	--fg-ghost: oklch(0.44 0.017 307);
 
 	/* one accent: brand pink (#ed4abf) */
 	--accent: oklch(0.674 0.23 341);
-	--accent-fg: oklch(0.2 0.07 341);
+	--accent-fg: oklch(0.99 0.01 341);
 	--accent-muted: oklch(0.674 0.23 341 / 18%);
+	--accent-soft: oklch(0.674 0.23 341 / 9%);
 
 	/* brand lockup */
 	--brand-mark-gradient: linear-gradient(135deg, #ed4abf 0%, #9b4dff 50%, #5ad8e6 100%);
+	--brand-pink: #ed4abf;
+	--brand-violet: #9b4dff;
+	--brand-cyan: #5ad8e6;
 
 	/* status — used sparingly */
 	--ok: oklch(0.76 0.14 150);
 	--warn: oklch(0.79 0.14 85);
-	--err: oklch(0.66 0.19 25);
+	--err: oklch(0.68 0.18 25);
 
-	/* hairlines */
+	/* hairlines — soft (within a group), standard, strong (emphasis) */
+	--border-soft: oklch(1 0 0 / 5.5%);
 	--border: oklch(1 0 0 / 9%);
-	--border-strong: oklch(1 0 0 / 13%);
+	--border-strong: oklch(1 0 0 / 15%);
 	/* focus ring: brand cyan (#5ad8e6) — distinct from the accent */
 	--ring: oklch(0.817 0.112 205 / 70%);
 
-	/* type — system stacks only */
+	/* type — system stacks only (static SPA, no third-party font fetch) */
 	--font-ui: ui-sans-serif, system-ui, -apple-system, "Segoe UI", "Helvetica Neue", sans-serif;
 	--font-mono: ui-monospace, "SF Mono", "JetBrains Mono", "Cascadia Mono", Menlo, Consolas, monospace;
 
-	/* radii */
-	--radius-sm: 3px;
+	/* radii — small controls, cards, docks/dialogs */
+	--radius-sm: 4px;
 	--radius: 6px;
-	--radius-lg: 8px;
+	--radius-lg: 10px;
+	--radius-xl: 14px;
 
-	/* non-pinned helpers (kept here so no raw colors leak outside this file) */
+	/* reading column — prose stays at a readable measure at any window width */
+	--column: 760px;
+
+	/* elevation helpers (kept here so no raw colors leak outside this file) */
+	--shadow-dock: 0 10px 30px oklch(0 0 0 / 38%), 0 1px 3px oklch(0 0 0 / 30%);
+	/* human prompt surface — warm violet/aubergine tint distinct from neutral cards */
+	--prompt-bg: oklch(0.195 0.032 315);
+	--prompt-border: oklch(0.36 0.06 315 / 40%);
+	--prompt-shadow: 0 1px 3px oklch(0 0 0 / 25%);
 	--shadow-overlay: 0 12px 32px oklch(0 0 0 / 45%), 0 2px 8px oklch(0 0 0 / 30%);
 	--rail-mobile-shadow: -4px 0 16px oklch(0 0 0 / 30%);
 	--backdrop: oklch(0.1 0.014 307 / 62%);
@@ -54,29 +71,37 @@
 [data-theme="light"] {
 	color-scheme: light;
 
-	--bg: oklch(0.985 0.004 307);
+	--bg: oklch(0.985 0.003 307);
 	--bg-raised: oklch(1 0 0);
-	--bg-inset: oklch(0.95 0.006 307);
-	--bg-overlay: oklch(0.965 0.006 307);
+	--bg-inset: oklch(0.962 0.006 307);
+	--bg-overlay: oklch(1 0 0);
+	--bg-hover: oklch(0.3 0.03 307 / 4.5%);
 
-	--fg: oklch(0.26 0.03 307);
-	--fg-muted: oklch(0.46 0.03 307);
-	--fg-faint: oklch(0.58 0.025 307);
+	--fg: oklch(0.24 0.028 307);
+	--fg-muted: oklch(0.45 0.028 307);
+	--fg-faint: oklch(0.58 0.022 307);
+	--fg-ghost: oklch(0.72 0.016 307);
 
-	--accent: oklch(0.62 0.23 341);
+	--accent: oklch(0.6 0.23 341);
 	--accent-fg: oklch(0.99 0.01 341);
-	--accent-muted: oklch(0.62 0.23 341 / 14%);
+	--accent-muted: oklch(0.6 0.23 341 / 14%);
+	--accent-soft: oklch(0.6 0.23 341 / 7%);
 
-	--ok: oklch(0.55 0.13 150);
-	--warn: oklch(0.6 0.13 85);
+	--ok: oklch(0.56 0.14 150);
+	--warn: oklch(0.62 0.14 70);
 	--err: oklch(0.55 0.19 25);
 
-	--border: oklch(0 0 0 / 10%);
-	--border-strong: oklch(0 0 0 / 15%);
+	--border-soft: oklch(0.3 0.03 307 / 6%);
+	--border: oklch(0.3 0.03 307 / 11%);
+	--border-strong: oklch(0.3 0.03 307 / 18%);
 	--ring: oklch(0.58 0.13 230 / 70%);
 
-	--shadow-overlay: 0 12px 32px oklch(0 0 0 / 14%), 0 2px 8px oklch(0 0 0 / 10%);
-	--rail-mobile-shadow: -4px 0 16px oklch(0 0 0 / 14%);
+	--shadow-dock: 0 8px 24px oklch(0.3 0.04 307 / 9%), 0 1px 2px oklch(0.3 0.04 307 / 8%);
+	--shadow-overlay: 0 12px 32px oklch(0.3 0.04 307 / 14%), 0 2px 8px oklch(0.3 0.04 307 / 10%);
+	--prompt-bg: oklch(0.965 0.016 315);
+	--prompt-border: oklch(0.86 0.03 315 / 60%);
+	--prompt-shadow: 0 1px 2px oklch(0.3 0.04 315 / 6%);
+	--rail-mobile-shadow: -4px 0 16px oklch(0.3 0.04 307 / 14%);
 	--backdrop: oklch(0.55 0.02 307 / 28%);
 }
 
@@ -85,29 +110,37 @@
 	:root:not([data-theme]) {
 		color-scheme: light;
 
-		--bg: oklch(0.985 0.004 307);
+		--bg: oklch(0.985 0.003 307);
 		--bg-raised: oklch(1 0 0);
-		--bg-inset: oklch(0.95 0.006 307);
-		--bg-overlay: oklch(0.965 0.006 307);
+		--bg-inset: oklch(0.962 0.006 307);
+		--bg-overlay: oklch(1 0 0);
+		--bg-hover: oklch(0.3 0.03 307 / 4.5%);
 
-		--fg: oklch(0.26 0.03 307);
-		--fg-muted: oklch(0.46 0.03 307);
-		--fg-faint: oklch(0.58 0.025 307);
+		--fg: oklch(0.24 0.028 307);
+		--fg-muted: oklch(0.45 0.028 307);
+		--fg-faint: oklch(0.58 0.022 307);
+		--fg-ghost: oklch(0.72 0.016 307);
 
-		--accent: oklch(0.62 0.23 341);
+		--accent: oklch(0.6 0.23 341);
 		--accent-fg: oklch(0.99 0.01 341);
-		--accent-muted: oklch(0.62 0.23 341 / 14%);
+		--accent-muted: oklch(0.6 0.23 341 / 14%);
+		--accent-soft: oklch(0.6 0.23 341 / 7%);
 
-		--ok: oklch(0.55 0.13 150);
-		--warn: oklch(0.6 0.13 85);
+		--ok: oklch(0.56 0.14 150);
+		--warn: oklch(0.62 0.14 70);
 		--err: oklch(0.55 0.19 25);
 
-		--border: oklch(0 0 0 / 10%);
-		--border-strong: oklch(0 0 0 / 15%);
+		--border-soft: oklch(0.3 0.03 307 / 6%);
+		--border: oklch(0.3 0.03 307 / 11%);
+		--border-strong: oklch(0.3 0.03 307 / 18%);
 		--ring: oklch(0.58 0.13 230 / 70%);
 
-		--shadow-overlay: 0 12px 32px oklch(0 0 0 / 14%), 0 2px 8px oklch(0 0 0 / 10%);
+		--shadow-dock: 0 8px 24px oklch(0.3 0.04 307 / 9%), 0 1px 2px oklch(0.3 0.04 307 / 8%);
+		--shadow-overlay: 0 12px 32px oklch(0.3 0.04 307 / 14%), 0 2px 8px oklch(0.3 0.04 307 / 10%);
+		--prompt-bg: oklch(0.965 0.016 315);
+		--prompt-border: oklch(0.86 0.03 315 / 60%);
+		--prompt-shadow: 0 1px 2px oklch(0.3 0.04 315 / 6%);
+		--rail-mobile-shadow: -4px 0 16px oklch(0.3 0.04 307 / 14%);
 		--backdrop: oklch(0.55 0.02 307 / 28%);
-		--rail-mobile-shadow: -4px 0 16px oklch(0 0 0 / 14%);
 	}
 }

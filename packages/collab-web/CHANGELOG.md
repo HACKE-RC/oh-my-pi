@@ -2,6 +2,23 @@
 
 ## [Unreleased]
 
+### Changed
+
+- Redesigned the collab client with speaker-attributed chat turns, a centered reading column, an aligned prompt dock, clearer connection status, and a tree-style agents panel.
+- Collapsed tool calls into work blocks of at most three calls; progress stays visible in the summary, and tool details, invoked skills, and injected notices expand on demand.
+- Showed reasoning as visible, streaming Markdown with TUI-inspired styling and a bottom-left "Thought for N seconds" footer when measured timing is available; older sessions remain readable without invented durations.
+- Showed spawned subagents as a card in the chat with live per-agent status, activity, and cost; each row opens that agent's transcript. Background job completions and messages between agents now read as compact rows instead of raw `<task-result>`/`<irc>` envelopes.
+- Added a "Jump to latest" pill when you scroll up, showing how many new messages arrived; the header lists who's in the session by name, and the agents panel no longer opens over the chat on phones.
+- Restyled user prompt cards with a warm aubergine/violet surface and subtle border in the omp theme, replacing the flat grey pill.
+- Displayed structured subagent results as readable reports with labeled sections, lists, and wrapped text, with a JSON toggle for the full payload.
+
+### Fixed
+
+- Opening the client over plain `http://` from a network address (for example a phone on the LAN) now explains that the browser blocks the required encryption and how to fix it, instead of failing with "Cannot read properties of undefined (reading 'importKey')".
+- Kept thinking text and opened tool output stable across streaming and saved-message handoffs; tool details no longer auto-open, and one working indicator shows the latest actual tool intent instead of generic or duplicated status text.
+- Rendered parent IRC wait-interrupt messages consistently with other agent messages in both the main chat and task viewer, showing sender, recipient, and formatted content instead of raw wrappers in host bubbles.
+- Fixed scroll position jumping when loading earlier history inside a long grouped turn; the visible message segment now stays anchored by content identity instead of the turn container.
+
 ## [18.3.1] - 2026-09-25
 
 ### Fixed
